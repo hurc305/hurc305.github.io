@@ -1,0 +1,104 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Hacking Day Demo</title>
+  <meta name="description" content=“In Class Demo for Hacking on”>
+  <meta name="author" content="HURC305">
+
+  <link rel="stylesheet" href="css/main.css?v=1.0">
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+<link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/themes/css/cartodb.css" />
+  <script src="http://libs.cartocdn.com/cartodb.js/v3/cartodb.js"></script>
+  <!--[if lte IE 8]>
+    <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v2/themes/css/cartodb.ie.css" />
+  <![endif]-->
+<link rel="stylesheet" href="css/cdb_custom.css">	  
+  <style>
+    html, body {width:100%; height:100%; padding: 0; margin: 0;}
+    #cartodb-map { width: 100%; height:100%; background: #AAA;}
+	
+  </style>
+
+    <script type="infowindow/html" id="infowindow_video">
+        <div class="cartodb-popup v2">
+          <a href="#close" class="cartodb-popup-close-button close">X</a>
+           <div class="cartodb-popup-content-wrapper">
+             <div class="cartodb-popup-content">
+               <!-- content.data contains the field info -->
+               <iframe width="280" height="156" src="https://www.youtube.com/embed/Ed0BMSfEwuI" frameborder="0" allowfullscreen></iframe>
+			   <h4>{{content.data.description}}</h4>
+             </div>
+           </div>
+           <div class="cartodb-popup-tip-container"></div>
+        </div>
+      </script>
+
+    <script type="infowindow/html" id="infowindow_video">
+        <div class="cartodb-popup v2">
+          <a href="#close" class="cartodb-popup-close-button close">X</a>
+           <div class="cartodb-popup-content-wrapper">
+             <div class="cartodb-popup-content">
+               <!-- content.data contains the field info -->
+               <iframe width="280" height="156" src="https://www.youtube.com/embed/Ed0BMSfEwuI" frameborder="0" allowfullscreen></iframe>
+			   <h4>{{content.data.description}}</h4>
+             </div>
+           </div>
+           <div class="cartodb-popup-tip-container"></div>
+        </div>
+      </script>
+  <script>
+    var map;
+    function init(){
+      // initiate leaflet map
+      map = new L.Map('cartodb-map', { 
+        center: [31.5807,-84.1560],
+        zoom: 6 
+      });
+	  
+  // Add a basemap to the map object just created
+      /*L.tileLayer('http://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png', {
+          attribution: 'Stamen'
+          }).addTo(map);*/
+	  
+      var layerUrl = 'https://alextarr.cartodb.com/api/v2/viz/9f7a28f6-6df9-11e5-8114-0e5db1731f59/viz.json';
+      
+    
+    cartodb.createLayer(map, layerUrl, {legends:false})
+      .addTo(map)
+      .on('done', function(layer) {
+		  var sublayer = layer.getSubLayer(0);
+		  sublayer.infowindow.set({
+			  template: $('#infowindow_video').html(),
+			  width: 260,
+			  maxHeight:180
+		  });
+		  L.marker([31.5807, -84.1560,]).addTo(map);	  
+      }).on('error', function() {
+        //log the error
+      });
+    }
+    var customLegend = new cdb.geo.ui.Legend.Custom({
+      title: "Custom Legend",
+      data: [
+        { name: "Natural Parks",  value: "#58A062" },
+        { name: "Villages",       value: "#F07971" },
+        { name: "Rivers",         value: "#54BFDE" },
+        { name: "Fields",         value: "#9BC562" },
+        { name: "Caves",          value: "#FABB5C" }
+      ]
+    });
+  </script>
+
+</head>
+
+<body onload="init()">
+
+<div id='cartodb-map'></div>
+
+</body>
+</html>
